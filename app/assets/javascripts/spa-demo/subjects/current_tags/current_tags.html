@@ -1,0 +1,12 @@
+<ul class="items tags">
+  <li ng-repeat="ti in $ctrl.tags"
+      ng-class="{selected: $ctrl.isCurrentTag($index)}">
+    <a ng-click="$ctrl.tagClicked($index)">
+      <span class="id tag_id">{{ti.tag_id}}</span>
+      <span class="name">{{ti.tag_name}}</span>
+      <span class="id thing_id" ng-if="ti.thing_id">{{ti.thing_id}}</span>
+      <span class="thing_name" ng-if="ti.thing_id">({{ti.thing_name}})</span>
+      <span class="distance" ng-if="ti.distance!=null">({{ti.distance | number:1}} miles)</span>
+    </a>
+  </li>
+</ul>
