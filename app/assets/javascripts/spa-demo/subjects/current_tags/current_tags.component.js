@@ -40,7 +40,7 @@
     return;
     //////////////
     function isCurrentTag(tag_id) {
-      return tag_id==vm.currentTagIdx;
+      return tag_id==vm.currentTagId;
     }
     function tagClicked(tag_id) {
       vm.currentTagId = tag_id;
