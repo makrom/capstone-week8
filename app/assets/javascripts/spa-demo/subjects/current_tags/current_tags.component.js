@@ -24,7 +24,7 @@
   function CurrentTagsController($scope, $stateParams, currentSubjects, Tag, TagThing) {
     var vm=this;
     vm.tagClicked = tagClicked;
-    vm.currentTagIdx = -1;
+    vm.currentTagId = -1;
     vm.isCurrentTag = isCurrentTag;
 
     vm.$onInit = function() {
@@ -39,12 +39,12 @@
     }
     return;
     //////////////
-    function isCurrentTag(index) {
-      return index==vm.currentTagIdx;
+    function isCurrentTag(tag_id) {
+      return tag_id==vm.currentTagIdx;
     }
-    function tagClicked(index) {
-      vm.currentTagIdx = index;
-      var result = TagThing.query({tag_id:vm.tags[index].id});
+    function tagClicked(tag_id) {
+      vm.currentTagId = tag_id;
+      var result = TagThing.query({tag_id:tag_id});
       result.$promise.then(
         function(things) {
           var selectedThings = [];

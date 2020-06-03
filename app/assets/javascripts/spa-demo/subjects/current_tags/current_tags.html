@@ -1,8 +1,9 @@
 <h3>Please, select the Tag You want to display Things/Images</h3>
+<label>or Search tag: <input ng-model="search.name"></label>
 <ul class="items tags">
-  <li ng-repeat="ti in $ctrl.tags"
-      ng-class="{selected: $ctrl.isCurrentTag($index)}">
-    <a ng-click="$ctrl.tagClicked($index)">
+  <li ng-repeat="ti in $ctrl.tags | filter:search"
+      ng-class="{selected: $ctrl.isCurrentTag(ti.id)}">
+    <a ng-click="$ctrl.tagClicked(ti.id)">
       <span class="id tag_id">{{ti.id}}</span>
       <span class="name">{{ti.name}}</span>
     </a>
