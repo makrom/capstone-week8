@@ -18,42 +18,46 @@
     service.version = 0;
     service.images = [];
     service.imageIdx = null;
-    service.tags = [];
-    service.tagIdx = null;
     service.things = [];
+    service.selectedThings = [];
     service.thingIdx = null;
     service.refresh = refresh;
     service.isCurrentImageIndex = isCurrentImageIndex;
-    service.isCurrentTagIndex = isCurrentTagIndex;
     service.isCurrentThingIndex = isCurrentThingIndex;
     service.nextThing = nextThing;
     service.previousThing = previousThing;
+    service.showOnlyThings = showOnlyThings;
 
     //refresh();
     $rootScope.$watch(function(){ return currentOrigin.getVersion(); }, refresh);
+    // $rootScope.$watch(function(){ return service.selectedThings; }, refresh);
     return;
     ////////////////
     function refresh() {
-      var params=currentOrigin.getPosition();
-      if (!params || !params.lng || !params.lat) {
-        params=angular.copy(APP_CONFIG.default_position);
-      } else {
-        params["distance"]=true;
-      }
+      if (service.selectedThings.length>0) {
+        var params=currentOrigin.getPosition();
+        if (!params || !params.lng || !params.lat) {
+          params=angular.copy(APP_CONFIG.default_position);
+        } else {
+          params["distance"]=true;
+        }
 
-      if (currentOrigin.getDistance() > 0) {
-        params["miles"]=currentOrigin.getDistance();
-      }
-      params["order"]="ASC";
-      console.log("refresh",params);
+        if (currentOrigin.getDistance() > 0) {
+          params["miles"]=currentOrigin.getDistance();
+        }
+        params["order"]="ASC";
+        console.log("refresh",params);
 
-      var p1=refreshImages(params);
-      params["subject"]="thing";
-      var p2=refreshThings(params);
-      $q.all([p1,p2]).then(
-        function(){
-          service.setCurrentImageForCurrentThing();
-        });
+        params["including[]"]=service.selectedThings;
+        var p1=refreshImages(params);
+        params["subject"]="thing";
+        console.log(params);
+        var p2=refreshThings(params);
+        $q.all([p1,p2]).then(
+          function(){
+            service.setCurrentImageForCurrentThing();
+          });
+      }
     }
 
     function refreshImages(params) {
@@ -87,10 +91,6 @@
       //console.log("isCurrentImageIndex", index, service.imageIdx === index);
       return service.imageIdx === index;
     }
-    function isCurrentTagIndex(index) {
-      //console.log("isCurrentTagIndex", index, service.tagIdx === index);
-      return service.tagIdx === index;
-    }
     function isCurrentThingIndex(index) {
       //console.log("isCurrentThingIndex", index, service.thingIdx === index);
       return service.thingIdx === index;
@@ -109,6 +109,11 @@
         service.setCurrentThing(service.things.length-1);
       }
     }
+    function showOnlyThings(selectedThings) {
+      console.log("showOnlyThings: ",selectedThings);
+      service.selectedThings = selectedThings;
+      refresh();
+    }
   }
 
   CurrentSubjects.prototype.getVersion = function() {
@@ -116,9 +121,6 @@
   }
   CurrentSubjects.prototype.getImages = function() {
     return this.images;
-  }
-  CurrentSubjects.prototype.getTags = function() {
-    return this.tags;
   }
   CurrentSubjects.prototype.getThings = function() {
     return this.things;
@@ -246,19 +248,4 @@
     this.setCurrentThingId(thing_id, true);
     this.setCurrentImageId(image_id, true);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  })();
+})();

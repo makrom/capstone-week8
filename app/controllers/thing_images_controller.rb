@@ -18,7 +18,7 @@ class ThingImagesController < ApplicationController
   def image_things
     authorize @image, :get_things?
     @thing_images=@image.thing_images.prioritized.with_name
-    render :index 
+    render :index
   end
 
   def linkable_things
@@ -43,13 +43,15 @@ class ThingImagesController < ApplicationController
     #use eTag versus last_modified -- ng-token-auth munges if-modified-since
     eTag="#{Digest::MD5.hexdigest(state)}"
 
-    if stale?  :etag=>eTag
+    if (stale?  :etag=>eTag)
       @thing_images=ThingImage.within_range(@origin, miles, reverse)
         .with_name
         .with_caption
         .with_position
-      @thing_images=@thing_images.things    if subject && subject.downcase=="thing"
+      @thing_images=@thing_images.including(params[:including])  if params[:including]
+      @thing_images=@thing_images.things   if subject && subject.downcase=="thing"
       @thing_images=ThingImage.with_distance(@origin, @thing_images) if distance.downcase=="true"
+      pp @thing_images
       render "thing_images/index"
     end
   end
