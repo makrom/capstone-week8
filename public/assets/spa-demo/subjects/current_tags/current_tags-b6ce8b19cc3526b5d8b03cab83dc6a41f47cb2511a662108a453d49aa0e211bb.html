@@ -1,0 +1,10 @@
+<h3>Please, select the Tag You want to display Things/Images</h3>
+<ul class="items tags">
+  <li ng-repeat="ti in $ctrl.tags"
+      ng-class="{selected: $ctrl.isCurrentTag($index)}">
+    <a ng-click="$ctrl.tagClicked($index)">
+      <span class="id tag_id">{{ti.id}}</span>
+      <span class="name">{{ti.name}}</span>
+    </a>
+  </li>
+</ul>
